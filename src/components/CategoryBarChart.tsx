@@ -25,21 +25,21 @@ export function CategoryBarChart({
         const pct = max > 0 ? (d.amount / max) * 100 : 0;
         const slot = seriesSlotFor(d.category);
         return (
-          <div key={d.category} role="row" className="flex items-center gap-3">
-            <div className="w-28 shrink-0 truncate text-sm text-ink-secondary" role="cell">
-              {d.category}
+          <div key={d.category} role="row" className="space-y-1">
+            <div className="flex items-baseline justify-between text-sm" role="cell">
+              <span className="text-ink-secondary">{d.category}</span>
+              <span className="tabular-nums text-ink-primary">
+                {formatCurrency(d.amount, currency)}
+              </span>
             </div>
-            <div className="flex-1 rounded bg-line-grid" role="cell">
+            <div className="rounded bg-line-grid" role="cell">
               <div
-                className="h-4 rounded"
+                className="h-3 rounded"
                 style={{
                   width: `${Math.max(pct, 2)}%`,
                   backgroundColor: `var(--series-${slot})`,
                 }}
               />
-            </div>
-            <div className="w-24 shrink-0 text-right text-sm tabular-nums text-ink-primary" role="cell">
-              {formatCurrency(d.amount, currency)}
             </div>
           </div>
         );

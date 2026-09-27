@@ -1,8 +1,8 @@
 export const CURRENCIES = [
-  { code: "USD", label: "USD - US Dollar" },
-  { code: "THB", label: "THB - Thai Baht" },
   { code: "CNY", label: "CNY - Chinese Yuan" },
+  { code: "USD", label: "USD - US Dollar" },
   { code: "LAK", label: "LAK - Lao Kip" },
+  { code: "THB", label: "THB - Thai Baht" },
 ] as const;
 
 export type CurrencyCode = (typeof CURRENCIES)[number]["code"];
@@ -25,13 +25,15 @@ export function formatDate(date: Date | string): string {
 
 export const EXPENSE_CATEGORIES = [
   "Food",
-  "Housing",
-  "Transport",
+  "Drinks",
+  "Beauty & Self-Care",
+  "Groceries",
+  "Personal Items",
+  "Education",
   "Utilities",
-  "Entertainment",
-  "Health",
-  "Shopping",
-  "Other",
+  "Transport",
+  "Family",
+  "Others",
 ] as const;
 
 export const INCOME_CATEGORIES = [
@@ -42,15 +44,23 @@ export const INCOME_CATEGORIES = [
   "Other",
 ] as const;
 
+export const SAVINGS_CATEGORIES = ["Stocks", "Gold", "Emergency Fund"] as const;
+
 // Fixed order, never cycled - matches the categorical slot order.
+// Only the first 7 get a distinct color; everything after folds into
+// slot 8 ("Other") - each bar still carries its own text label, so
+// sharing a color past the 7th category doesn't hurt readability.
 export const CATEGORY_COLOR_ORDER = [
   "Food",
-  "Housing",
-  "Transport",
+  "Drinks",
+  "Beauty & Self-Care",
+  "Groceries",
+  "Personal Items",
+  "Education",
   "Utilities",
-  "Entertainment",
-  "Health",
-  "Shopping",
+  "Transport",
+  "Family",
+  "Others",
   "Salary",
   "Freelance",
   "Gift",
@@ -60,7 +70,7 @@ export const CATEGORY_COLOR_ORDER = [
 
 export function seriesSlotFor(category: string): number {
   const idx = CATEGORY_COLOR_ORDER.indexOf(category as any);
-  // 8 categorical slots available; fold anything past slot 8 into "Other" (slot 8).
-  const slot = idx === -1 ? 8 : (idx % 8) + 1;
+  // 8 categorical slots available; fold anything past slot 8 into "Other" (slot 8) - never cycle.
+  const slot = idx === -1 || idx >= 8 ? 8 : idx + 1;
   return slot;
 }

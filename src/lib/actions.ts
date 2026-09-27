@@ -50,6 +50,7 @@ export async function deleteTransaction(id: string) {
 
 export async function createGoal(formData: FormData) {
   const name = String(formData.get("name") || "").trim();
+  const category = String(formData.get("category") || "Emergency Fund");
   const targetAmount = Number(formData.get("targetAmount"));
   const currency = String(formData.get("currency") || "USD");
 
@@ -58,7 +59,7 @@ export async function createGoal(formData: FormData) {
     throw new Error("Target amount must be a positive number.");
   }
 
-  await prisma.savingsGoal.create({ data: { name, targetAmount, currency } });
+  await prisma.savingsGoal.create({ data: { name, category, targetAmount, currency } });
 
   revalidatePath("/goals");
   revalidatePath("/");

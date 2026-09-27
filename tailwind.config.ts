@@ -8,6 +8,10 @@ const config: Config = {
       colors: {
         surface: "var(--surface-1)",
         page: "var(--page-plane)",
+        accent: {
+          DEFAULT: "var(--accent)",
+          ink: "var(--accent-ink)",
+        },
         ink: {
           primary: "var(--text-primary)",
           secondary: "var(--text-secondary)",

@@ -24,6 +24,7 @@ export default async function GoalsPage() {
               <div key={g.id} className="space-y-2">
                 <SavingsGoalCard
                   name={g.name}
+                  category={g.category}
                   target={g.targetAmount}
                   currency={g.currency}
                   saved={g.transactions.reduce((sum, t) => sum + t.amount, 0)}

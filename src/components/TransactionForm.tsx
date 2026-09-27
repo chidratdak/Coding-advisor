@@ -25,7 +25,7 @@ export function TransactionForm({ goals }: { goals: Goal[] }) {
               onClick={() => setType(t)}
               className={`rounded-md px-4 py-2 text-sm font-medium ${
                 type === t
-                  ? "bg-series-1 text-white"
+                  ? "bg-accent text-accent-ink"
                   : "bg-line-grid text-ink-secondary"
               }`}
             >
@@ -78,7 +78,7 @@ export function TransactionForm({ goals }: { goals: Goal[] }) {
         goals.length === 0 ? (
           <p className="rounded-md bg-line-grid p-3 text-sm text-ink-secondary">
             You don&apos;t have a savings goal yet.{" "}
-            <Link href="/goals" className="font-medium text-series-1">
+            <Link href="/goals" className="font-medium text-ink-primary underline underline-offset-2">
               Create one first
             </Link>
             .
@@ -151,7 +151,7 @@ export function TransactionForm({ goals }: { goals: Goal[] }) {
       <button
         type="submit"
         disabled={type === "SAVINGS" && goals.length === 0}
-        className="w-full rounded-md bg-series-1 px-4 py-2 text-sm font-medium text-white hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+        className="w-full rounded-md bg-accent px-4 py-2 text-sm font-medium text-accent-ink hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
       >
         Save transaction
       </button>

@@ -26,7 +26,7 @@ export default async function DashboardPage() {
         <h1 className="text-xl font-semibold text-ink-primary">Dashboard</h1>
         <Link
           href="/add"
-          className="rounded-md bg-series-1 px-4 py-2 text-sm font-medium text-white hover:opacity-90"
+          className="rounded-md bg-accent px-4 py-2 text-sm font-medium text-accent-ink hover:opacity-90"
         >
           + Add transaction
         </Link>
@@ -35,7 +35,7 @@ export default async function DashboardPage() {
       {currencies.length === 0 && (
         <div className="rounded-lg border border-line-border bg-surface p-6 text-center text-sm text-ink-secondary">
           No transactions yet.{" "}
-          <Link href="/add" className="font-medium text-series-1">
+          <Link href="/add" className="font-medium text-ink-primary underline underline-offset-2">
             Add your first one
           </Link>
           .
@@ -98,7 +98,7 @@ export default async function DashboardPage() {
             <h2 className="text-sm font-semibold uppercase tracking-wide text-ink-muted">
               Savings goals
             </h2>
-            <Link href="/goals" className="text-sm font-medium text-series-1">
+            <Link href="/goals" className="text-sm font-medium text-ink-primary underline underline-offset-2">
               Manage goals
             </Link>
           </div>
@@ -107,6 +107,7 @@ export default async function DashboardPage() {
               <SavingsGoalCard
                 key={g.id}
                 name={g.name}
+                category={g.category}
                 target={g.targetAmount}
                 currency={g.currency}
                 saved={g.transactions.reduce((sum, t) => sum + t.amount, 0)}

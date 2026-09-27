@@ -20,7 +20,7 @@ const TYPE_LABEL: Record<string, string> = {
 const TYPE_TONE: Record<string, string> = {
   INCOME: "text-status-good",
   EXPENSE: "text-status-critical",
-  SAVINGS: "text-series-1",
+  SAVINGS: "text-ink-primary",
 };
 
 export function TransactionList({ rows }: { rows: Row[] }) {

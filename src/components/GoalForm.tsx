@@ -1,7 +1,7 @@
 "use client";
 
 import { createGoal } from "@/lib/actions";
-import { CURRENCIES } from "@/lib/format";
+import { CURRENCIES, SAVINGS_CATEGORIES } from "@/lib/format";
 
 export function GoalForm() {
   return (
@@ -19,6 +19,23 @@ export function GoalForm() {
           placeholder="e.g. Emergency fund"
           className="w-full rounded-md border border-line-border bg-transparent px-3 py-2 text-ink-primary"
         />
+      </div>
+
+      <div>
+        <label htmlFor="category" className="mb-1 block text-sm font-medium text-ink-secondary">
+          Category
+        </label>
+        <select
+          id="category"
+          name="category"
+          className="w-full rounded-md border border-line-border bg-transparent px-3 py-2 text-ink-primary"
+        >
+          {SAVINGS_CATEGORIES.map((c) => (
+            <option key={c} value={c}>
+              {c}
+            </option>
+          ))}
+        </select>
       </div>
 
       <div className="grid grid-cols-2 gap-4">
@@ -58,7 +75,7 @@ export function GoalForm() {
 
       <button
         type="submit"
-        className="w-full rounded-md bg-series-1 px-4 py-2 text-sm font-medium text-white hover:opacity-90"
+        className="w-full rounded-md bg-accent px-4 py-2 text-sm font-medium text-accent-ink hover:opacity-90"
       >
         Create goal
       </button>

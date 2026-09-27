@@ -12,6 +12,10 @@
   --gridline: #e1e0d9;
   --border: rgba(11, 11, 11, 0.1);
 
+  /* Neutral, monochrome accent for buttons/links - minimalist chrome, no brand color */
+  --accent: #262624;
+  --accent-ink: #fcfcfb;
+
   --series-1: #2a78d6;
   --series-2: #eb6834;
   --series-3: #1baf7a;
@@ -38,6 +42,9 @@
     --gridline: #2c2c2a;
     --border: rgba(255, 255, 255, 0.1);
 
+    --accent: #ece9e2;
+    --accent-ink: #1a1a19;
+
     --series-1: #3987e5;
     --series-2: #d95926;
     --series-3: #199e70;
@@ -58,6 +65,9 @@
   --text-muted: #898781;
   --gridline: #2c2c2a;
   --border: rgba(255, 255, 255, 0.1);
+
+  --accent: #ece9e2;
+  --accent-ink: #1a1a19;
 
   --series-1: #3987e5;
   --series-2: #d95926;

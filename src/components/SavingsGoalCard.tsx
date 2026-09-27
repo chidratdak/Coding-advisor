@@ -2,11 +2,13 @@ import { formatCurrency } from "@/lib/format";
 
 export function SavingsGoalCard({
   name,
+  category,
   saved,
   target,
   currency,
 }: {
   name: string;
+  category?: string;
   saved: number;
   target: number;
   currency: string;
@@ -17,7 +19,14 @@ export function SavingsGoalCard({
   return (
     <div className="rounded-lg border border-line-border bg-surface p-4">
       <div className="flex items-baseline justify-between">
-        <span className="font-medium text-ink-primary">{name}</span>
+        <span className="font-medium text-ink-primary">
+          {name}
+          {category && (
+            <span className="ml-2 rounded-full bg-line-grid px-2 py-0.5 text-xs font-normal text-ink-secondary">
+              {category}
+            </span>
+          )}
+        </span>
         <span className="text-sm text-ink-secondary">
           {formatCurrency(saved, currency)} / {formatCurrency(target, currency)}
         </span>
@@ -27,7 +36,7 @@ export function SavingsGoalCard({
           className="h-3 rounded"
           style={{
             width: `${Math.max(pct, saved > 0 ? 2 : 0)}%`,
-            backgroundColor: reached ? "var(--status-good)" : "var(--series-1)",
+            backgroundColor: reached ? "var(--status-good)" : "var(--accent)",
           }}
         />
       </div>
