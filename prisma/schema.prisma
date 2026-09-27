@@ -10,6 +10,16 @@ datasource db {
 // SQLite has no native enum type, so the transaction type is a plain string
 // validated in application code (see src/lib/actions.ts): INCOME | EXPENSE | SAVINGS.
 
+// This app supports exactly one local account (a lock screen, not multi-user
+// auth) - see src/lib/auth.ts. The PIN is hashed with a random per-user salt.
+model User {
+  id        String   @id @default(cuid())
+  username  String   @unique
+  pinHash   String
+  pinSalt   String
+  createdAt DateTime @default(now())
+}
+
 model SavingsGoal {
   id           String        @id @default(cuid())
   name         String
