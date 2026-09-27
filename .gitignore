@@ -1,0 +1,14 @@
+node_modules
+.next
+out
+build
+*.log
+.DS_Store
+*.tsbuildinfo
+
+# database files (local data stays on your machine, not in git)
+prisma/dev.db
+prisma/dev.db-journal
+
+# env files may hold local settings
+.env*.local

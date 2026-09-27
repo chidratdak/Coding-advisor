@@ -1,0 +1,37 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// SQLite has no native enum type, so the transaction type is a plain string
+// validated in application code (see src/lib/actions.ts): INCOME | EXPENSE | SAVINGS.
+
+model SavingsGoal {
+  id           String        @id @default(cuid())
+  name         String
+  targetAmount Float
+  currency     String        @default("USD")
+  createdAt    DateTime      @default(now())
+  transactions Transaction[]
+}
+
+model Transaction {
+  id        String          @id @default(cuid())
+  type      String
+  amount    Float
+  currency  String          @default("USD")
+  category  String
+  note      String?
+  date      DateTime        @default(now())
+  createdAt DateTime        @default(now())
+  goalId    String?
+  goal      SavingsGoal?    @relation(fields: [goalId], references: [id], onDelete: SetNull)
+
+  @@index([date])
+  @@index([type])
+  @@index([currency])
+}
