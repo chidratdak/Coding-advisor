@@ -50,10 +50,12 @@ export const INCOME_CATEGORIES = [
 
 export const SAVINGS_CATEGORIES = ["Stocks", "Gold", "Emergency Fund"] as const;
 
-// Fixed order, never cycled - matches the categorical slot order.
-// Only the first 5 get a distinct color; everything after folds into
-// slot 6 ("Other") - each bar still carries its own text label, so
-// sharing a color past the 5th category doesn't hurt readability.
+// Fixed order, never cycled - matches the categorical slot order (the 7
+// palette-photo colors: Fern, Bluebell, Honey, Peony, Fennel, Pistachio,
+// Cherry Blossom). Only the first 7 get a distinct color; everything after
+// folds into slot 8 ("Other") - each slice still carries its own label in
+// the list beside the chart, so sharing a color past the 7th doesn't hurt
+// readability.
 export const CATEGORY_COLOR_ORDER = [
   "Food",
   "Drinks",
@@ -72,8 +74,8 @@ export const CATEGORY_COLOR_ORDER = [
   "Other",
 ] as const;
 
-const DISTINCT_SLOTS = 5;
-const OTHER_SLOT = 6;
+const DISTINCT_SLOTS = 7;
+const OTHER_SLOT = 8;
 
 export function seriesSlotFor(category: string): number {
   const idx = CATEGORY_COLOR_ORDER.indexOf(category as any);

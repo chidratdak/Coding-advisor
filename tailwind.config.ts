@@ -28,6 +28,8 @@ const config: Config = {
           4: "var(--series-4)",
           5: "var(--series-5)",
           6: "var(--series-6)",
+          7: "var(--series-7)",
+          8: "var(--series-8)",
         },
         status: {
           good: "var(--status-good)",

@@ -4,12 +4,10 @@
 
 /*
  * Theme derived from the user's palette photo: Fern, Pistachio, Fennel,
- * Cherry Blossom, Peony, Bluebell, Honey. The soft pastel swatches are used
- * directly for backgrounds/surfaces where they belong; the category-chart
- * colors are deepened/reordered variants validated for accessibility
- * (colorblind-safe adjacency + contrast) via the dataviz skill's validator,
- * since the raw pastels are too low-contrast/low-chroma to serve as chart
- * identity colors.
+ * Cherry Blossom, Peony, Bluebell, Honey. Used both for backgrounds/surfaces
+ * and, at the user's request, as the exact category-chart colors too
+ * (ordered to keep the most visually-similar pairs - Fennel/Cherry Blossom,
+ * Pistachio/Honey - from sitting next to each other in the chart).
  */
 
 :root {
@@ -26,14 +24,17 @@
   --accent: #4f6b52;
   --accent-ink: #fffcf5;
 
-  /* Category chart colors: Honey, Bluebell, Cherry Blossom, Fern, Peony,
-     then a shared muted "Other" tone (Pistachio-ish) for anything past 5. */
-  --series-1: #eb6834;
-  --series-2: #2a78d6;
-  --series-3: #e87ba4;
-  --series-4: #008300;
-  --series-5: #e34948;
-  --series-6: #a08f5c;
+  /* Category chart colors, exact palette-photo hexes: Fern, Bluebell, Honey,
+     Peony, Fennel, Pistachio, Cherry Blossom, then a neutral gray "Other"
+     for anything past those 7. */
+  --series-1: #768e78;
+  --series-2: #b7cbdb;
+  --series-3: #fcc88a;
+  --series-4: #e79897;
+  --series-5: #ebdec0;
+  --series-6: #c6c09c;
+  --series-7: #fecdbe;
+  --series-8: var(--text-muted);
 
   --status-good: #0ca30c;
   --status-warning: #fab219;
@@ -55,12 +56,14 @@
     --accent: #9cc49f;
     --accent-ink: #221d16;
 
-    --series-1: #d95926;
-    --series-2: #3987e5;
-    --series-3: #d55181;
-    --series-4: #008300;
-    --series-5: #e66767;
-    --series-6: #b7a876;
+    --series-1: #768e78;
+    --series-2: #b7cbdb;
+    --series-3: #fcc88a;
+    --series-4: #e79897;
+    --series-5: #ebdec0;
+    --series-6: #c6c09c;
+    --series-7: #fecdbe;
+    --series-8: var(--text-muted);
   }
 }
 
@@ -77,12 +80,14 @@
   --accent: #9cc49f;
   --accent-ink: #221d16;
 
-  --series-1: #d95926;
-  --series-2: #3987e5;
-  --series-3: #d55181;
-  --series-4: #008300;
-  --series-5: #e66767;
-  --series-6: #b7a876;
+  --series-1: #768e78;
+  --series-2: #b7cbdb;
+  --series-3: #fcc88a;
+  --series-4: #e79897;
+  --series-5: #ebdec0;
+  --series-6: #c6c09c;
+  --series-7: #fecdbe;
+  --series-8: var(--text-muted);
 }
 
 body {
