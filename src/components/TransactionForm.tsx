@@ -62,7 +62,7 @@ export function TransactionForm({ goals }: { goals: Goal[] }) {
             <select
               id="currency"
               name="currency"
-              defaultValue="USD"
+              defaultValue="CNY"
               className="w-full rounded-md border border-line-border bg-transparent px-3 py-2 text-ink-primary"
             >
               {CURRENCIES.map((c) => (
