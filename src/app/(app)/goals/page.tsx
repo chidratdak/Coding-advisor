@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { requireAuth } from "@/lib/auth";
 import { deleteGoal } from "@/lib/actions";
 import { GoalForm } from "@/components/GoalForm";
 import { SavingsGoalCard } from "@/components/SavingsGoalCard";
@@ -6,7 +7,10 @@ import { SavingsGoalCard } from "@/components/SavingsGoalCard";
 export const dynamic = "force-dynamic";
 
 export default async function GoalsPage() {
+  const userId = await requireAuth();
+
   const goals = await prisma.savingsGoal.findMany({
+    where: { userId },
     include: { transactions: { where: { type: "SAVINGS" } } },
     orderBy: { createdAt: "asc" },
   });

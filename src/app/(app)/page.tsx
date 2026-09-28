@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+import { requireAuth } from "@/lib/auth";
 import { StatTile } from "@/components/StatTile";
 import { CategoryBarChart } from "@/components/CategoryBarChart";
 import { SavingsGoalCard } from "@/components/SavingsGoalCard";
@@ -8,9 +9,12 @@ import { TransactionList } from "@/components/TransactionList";
 export const dynamic = "force-dynamic";
 
 export default async function DashboardPage() {
+  const userId = await requireAuth();
+
   const [transactions, goals] = await Promise.all([
-    prisma.transaction.findMany({ orderBy: { date: "desc" } }),
+    prisma.transaction.findMany({ where: { userId }, orderBy: { date: "desc" } }),
     prisma.savingsGoal.findMany({
+      where: { userId },
       include: { transactions: { where: { type: "SAVINGS" } } },
       orderBy: { createdAt: "asc" },
     }),

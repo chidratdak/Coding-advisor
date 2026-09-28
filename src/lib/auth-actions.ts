@@ -1,5 +1,6 @@
 "use server";
 
+import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { hashPin, verifyPin, createSession, clearSession } from "@/lib/auth";
 import { redirect } from "next/navigation";
@@ -7,9 +8,6 @@ import { redirect } from "next/navigation";
 const PIN_PATTERN = /^\d{4}$/;
 
 export async function setupAccount(formData: FormData) {
-  const existing = await prisma.user.count();
-  if (existing > 0) redirect("/login");
-
   const username = String(formData.get("username") || "").trim();
   const pin = String(formData.get("pin") || "");
   const confirmPin = String(formData.get("confirmPin") || "");
@@ -19,11 +17,21 @@ export async function setupAccount(formData: FormData) {
   if (pin !== confirmPin) redirect("/setup?error=mismatch");
 
   const { hash, salt } = hashPin(pin);
-  const user = await prisma.user.create({
-    data: { username, pinHash: hash, pinSalt: salt },
-  });
 
-  await createSession(user.id);
+  let userId: string;
+  try {
+    const user = await prisma.user.create({
+      data: { username, pinHash: hash, pinSalt: salt },
+    });
+    userId = user.id;
+  } catch (err) {
+    if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === "P2002") {
+      redirect("/setup?error=taken");
+    }
+    throw err;
+  }
+
+  await createSession(userId);
   redirect("/");
 }
 

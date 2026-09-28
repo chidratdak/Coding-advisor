@@ -1,10 +1,14 @@
 import { prisma } from "@/lib/prisma";
+import { requireAuth } from "@/lib/auth";
 import { TransactionForm } from "@/components/TransactionForm";
 
 export const dynamic = "force-dynamic";
 
 export default async function AddTransactionPage() {
+  const userId = await requireAuth();
+
   const goals = await prisma.savingsGoal.findMany({
+    where: { userId },
     orderBy: { createdAt: "asc" },
     select: { id: true, name: true, currency: true },
   });

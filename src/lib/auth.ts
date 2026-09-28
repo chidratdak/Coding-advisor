@@ -1,7 +1,6 @@
 import { randomBytes, scryptSync, timingSafeEqual, createHmac } from "crypto";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { prisma } from "@/lib/prisma";
 
 const SESSION_COOKIE = "session";
 const SESSION_MAX_AGE_SECONDS = 60 * 60 * 24 * 30; // 30 days
@@ -71,14 +70,10 @@ export async function getSessionUserId(): Promise<string | null> {
   return userId;
 }
 
-// Call at the top of every protected server component. Sends first-time
-// visitors to create their account, everyone else to the PIN login.
+// Call at the top of every protected server component. Sends anyone
+// without a valid session to the login page.
 export async function requireAuth(): Promise<string> {
-  const userCount = await prisma.user.count();
-  if (userCount === 0) redirect("/setup");
-
   const userId = await getSessionUserId();
   if (!userId) redirect("/login");
-
   return userId;
 }

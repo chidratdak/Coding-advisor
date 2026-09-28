@@ -1,6 +1,5 @@
-import { prisma } from "@/lib/prisma";
+import Link from "next/link";
 import { setupAccount } from "@/lib/auth-actions";
-import { redirect } from "next/navigation";
 
 export const dynamic = "force-dynamic";
 
@@ -8,6 +7,7 @@ const ERROR_MESSAGES: Record<string, string> = {
   username: "Enter a username.",
   pin: "Your PIN must be exactly 4 digits.",
   mismatch: "The two PINs don't match.",
+  taken: "That username is already taken — pick another.",
 };
 
 export default async function SetupPage({
@@ -15,18 +15,15 @@ export default async function SetupPage({
 }: {
   searchParams: Promise<{ error?: string }>;
 }) {
-  const existing = await prisma.user.count();
-  if (existing > 0) redirect("/login");
-
   const { error } = await searchParams;
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-page px-4">
       <div className="w-full max-w-sm space-y-6">
         <div className="text-center">
-          <h1 className="text-xl font-semibold text-ink-primary">Set up Money Tracker</h1>
+          <h1 className="text-xl font-semibold text-ink-primary">Create your account</h1>
           <p className="mt-1 text-sm text-ink-secondary">
-            Choose a username and a 4-digit PIN to lock your app.
+            Choose a username and a 4-digit PIN. Your data stays private to your account.
           </p>
         </div>
 
@@ -97,9 +94,16 @@ export default async function SetupPage({
           </button>
         </form>
 
+        <p className="text-center text-sm text-ink-secondary">
+          Already have an account?{" "}
+          <Link href="/login" className="font-medium text-ink-primary underline underline-offset-2">
+            Log in
+          </Link>
+        </p>
+
         <p className="text-center text-xs text-ink-muted">
-          This PIN only locks the app on this device — it's a convenience lock, not bank-grade
-          security. Anyone with direct access to your computer's files could still read the data.
+          This PIN is a convenience lock, not bank-grade security — pick something your close
+          friends couldn't easily guess if you're sharing this app with them.
         </p>
       </div>
     </div>

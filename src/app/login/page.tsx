@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma";
+import Link from "next/link";
 import { getSessionUserId } from "@/lib/auth";
 import { login } from "@/lib/auth-actions";
 import { redirect } from "next/navigation";
@@ -10,9 +10,6 @@ export default async function LoginPage({
 }: {
   searchParams: Promise<{ error?: string }>;
 }) {
-  const existing = await prisma.user.count();
-  if (existing === 0) redirect("/setup");
-
   const userId = await getSessionUserId();
   if (userId) redirect("/");
 
@@ -73,6 +70,13 @@ export default async function LoginPage({
             Log in
           </button>
         </form>
+
+        <p className="text-center text-sm text-ink-secondary">
+          New here?{" "}
+          <Link href="/setup" className="font-medium text-ink-primary underline underline-offset-2">
+            Create an account
+          </Link>
+        </p>
       </div>
     </div>
   );

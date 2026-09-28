@@ -1,10 +1,13 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
+import { requireAuth } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 export async function createTransaction(formData: FormData) {
+  const userId = await requireAuth();
+
   const type = String(formData.get("type"));
   const amount = Number(formData.get("amount"));
   const category = String(formData.get("category") || "Other");
@@ -22,13 +25,14 @@ export async function createTransaction(formData: FormData) {
 
   if (type === "SAVINGS") {
     if (!goalId) throw new Error("Pick a savings goal.");
-    const goal = await prisma.savingsGoal.findUniqueOrThrow({ where: { id: goalId } });
+    const goal = await prisma.savingsGoal.findFirstOrThrow({ where: { id: goalId, userId } });
     // A goal is denominated in one currency - the contribution must match it.
     currency = goal.currency;
   }
 
   await prisma.transaction.create({
     data: {
+      userId,
       type: type as "INCOME" | "EXPENSE" | "SAVINGS",
       amount,
       currency,
@@ -44,11 +48,14 @@ export async function createTransaction(formData: FormData) {
 }
 
 export async function deleteTransaction(id: string) {
-  await prisma.transaction.delete({ where: { id } });
+  const userId = await requireAuth();
+  await prisma.transaction.deleteMany({ where: { id, userId } });
   revalidatePath("/");
 }
 
 export async function createGoal(formData: FormData) {
+  const userId = await requireAuth();
+
   const name = String(formData.get("name") || "").trim();
   const category = String(formData.get("category") || "Emergency Fund");
   const targetAmount = Number(formData.get("targetAmount"));
@@ -59,7 +66,7 @@ export async function createGoal(formData: FormData) {
     throw new Error("Target amount must be a positive number.");
   }
 
-  await prisma.savingsGoal.create({ data: { name, category, targetAmount, currency } });
+  await prisma.savingsGoal.create({ data: { userId, name, category, targetAmount, currency } });
 
   revalidatePath("/goals");
   revalidatePath("/");
@@ -68,7 +75,8 @@ export async function createGoal(formData: FormData) {
 }
 
 export async function deleteGoal(id: string) {
-  await prisma.savingsGoal.delete({ where: { id } });
+  const userId = await requireAuth();
+  await prisma.savingsGoal.deleteMany({ where: { id, userId } });
   revalidatePath("/goals");
   revalidatePath("/");
 }
