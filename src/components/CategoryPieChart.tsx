@@ -16,7 +16,7 @@ export function CategoryPieChart({
   if (data.length === 0) {
     return (
       <p className="text-sm text-ink-muted">
-        No expenses logged yet for this currency.
+        Nothing logged yet for this currency.
       </p>
     );
   }
@@ -74,14 +74,14 @@ export function CategoryPieChart({
           </g>
         </svg>
         <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
-          <span className="text-xs text-ink-muted">Total spent</span>
+          <span className="text-xs text-ink-muted">Total</span>
           <span className="text-lg font-semibold text-ink-primary">
             {formatCurrency(total, currency)}
           </span>
         </div>
       </div>
 
-      <ul className="w-full min-w-0 space-y-2" aria-label="Spending by category">
+      <ul className="w-full min-w-0 space-y-2" aria-label="Where your money goes">
         {segments
           .slice()
           .sort((a, b) => b.amount - a.amount)

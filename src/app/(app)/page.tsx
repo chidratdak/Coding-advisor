@@ -59,9 +59,12 @@ export default async function DashboardPage() {
           .reduce((sum, t) => sum + t.amount, 0);
         const remaining = totalIncome - totalExpense - totalSaved;
 
+        // Savings contributions count as "where the money goes" too, each
+        // shown under its goal's name - but stay out of the Expenses stat
+        // above, which is spending only.
         const byCategory = new Map<string, number>();
         for (const t of rows) {
-          if (t.type !== "EXPENSE") continue;
+          if (t.type !== "EXPENSE" && t.type !== "SAVINGS") continue;
           byCategory.set(t.category, (byCategory.get(t.category) ?? 0) + t.amount);
         }
         const categoryTotals = Array.from(byCategory, ([category, amount]) => ({

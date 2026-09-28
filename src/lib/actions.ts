@@ -24,11 +24,15 @@ export async function createTransaction(formData: FormData) {
     throw new Error(`Amount must be a positive number up to ${MAX_AMOUNT.toLocaleString()}.`);
   }
 
+  // The goal's own name doubles as the sub-category, so "Retirement Fund"
+  // contributions show up as their own slice in the spending breakdown.
+  let goalName: string | null = null;
   if (type === "SAVINGS") {
     if (!goalId) throw new Error("Pick a savings goal.");
     const goal = await prisma.savingsGoal.findFirstOrThrow({ where: { id: goalId, userId } });
     // A goal is denominated in one currency - the contribution must match it.
     currency = goal.currency;
+    goalName = goal.name;
   }
 
   await prisma.transaction.create({
@@ -37,7 +41,7 @@ export async function createTransaction(formData: FormData) {
       type: type as "INCOME" | "EXPENSE" | "SAVINGS",
       amount,
       currency,
-      category: type === "SAVINGS" ? "Savings" : category,
+      category: type === "SAVINGS" ? goalName! : category,
       note,
       date: dateInput ? new Date(dateInput) : new Date(),
       goalId: type === "SAVINGS" ? goalId : null,
