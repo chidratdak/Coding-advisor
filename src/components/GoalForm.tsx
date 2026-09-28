@@ -1,7 +1,7 @@
 "use client";
 
 import { createGoal } from "@/lib/actions";
-import { CURRENCIES, SAVINGS_CATEGORIES } from "@/lib/format";
+import { CURRENCIES, SAVINGS_CATEGORIES, MAX_AMOUNT } from "@/lib/format";
 
 export function GoalForm() {
   return (
@@ -49,6 +49,7 @@ export function GoalForm() {
             type="number"
             step="0.01"
             min="0.01"
+            max={MAX_AMOUNT}
             required
             className="w-full rounded-md border border-line-border bg-transparent px-3 py-2 text-ink-primary"
             placeholder="0.00"

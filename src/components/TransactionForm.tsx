@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { createTransaction } from "@/lib/actions";
-import { CURRENCIES, EXPENSE_CATEGORIES, INCOME_CATEGORIES } from "@/lib/format";
+import { CURRENCIES, EXPENSE_CATEGORIES, INCOME_CATEGORIES, MAX_AMOUNT } from "@/lib/format";
 
 type Goal = { id: string; name: string; currency: string };
 
@@ -47,6 +47,7 @@ export function TransactionForm({ goals }: { goals: Goal[] }) {
             type="number"
             step="0.01"
             min="0.01"
+            max={MAX_AMOUNT}
             required
             className="w-full rounded-md border border-line-border bg-transparent px-3 py-2 text-ink-primary"
             placeholder="0.00"

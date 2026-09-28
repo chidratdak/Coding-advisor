@@ -7,6 +7,10 @@ export const CURRENCIES = [
 
 export type CurrencyCode = (typeof CURRENCIES)[number]["code"];
 
+// A generous cap for a single amount - large enough for any real personal
+// transaction, small enough to catch a fat-fingered extra digit or two.
+export const MAX_AMOUNT = 999_999_999.99;
+
 export function formatCurrency(amount: number, currency: string = "USD"): string {
   return new Intl.NumberFormat("en-US", {
     style: "currency",

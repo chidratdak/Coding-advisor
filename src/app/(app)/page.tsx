@@ -2,7 +2,7 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/auth";
 import { StatTile } from "@/components/StatTile";
-import { CategoryBarChart } from "@/components/CategoryBarChart";
+import { CategoryPieChart } from "@/components/CategoryPieChart";
 import { SavingsGoalCard } from "@/components/SavingsGoalCard";
 import { TransactionList } from "@/components/TransactionList";
 
@@ -22,7 +22,7 @@ export default async function DashboardPage() {
 
   const currencies = Array.from(new Set(transactions.map((t) => t.currency))).sort();
 
-  const recent = transactions.slice(0, 15);
+  const recent = transactions.slice(0, 10);
 
   return (
     <div className="space-y-10">
@@ -90,7 +90,7 @@ export default async function DashboardPage() {
               <h3 className="mb-4 text-sm font-medium text-ink-secondary">
                 Where your money goes
               </h3>
-              <CategoryBarChart data={categoryTotals} currency={currency} />
+              <CategoryPieChart data={categoryTotals} currency={currency} />
             </div>
           </section>
         );
@@ -123,9 +123,19 @@ export default async function DashboardPage() {
 
       {recent.length > 0 && (
         <section className="space-y-4">
-          <h2 className="text-sm font-semibold uppercase tracking-wide text-ink-muted">
-            Recent transactions
-          </h2>
+          <div className="flex items-center justify-between">
+            <h2 className="text-sm font-semibold uppercase tracking-wide text-ink-muted">
+              Recent transactions
+            </h2>
+            {transactions.length > recent.length && (
+              <Link
+                href="/transactions"
+                className="text-sm font-medium text-ink-primary underline underline-offset-2"
+              >
+                View all ({transactions.length})
+              </Link>
+            )}
+          </div>
           <div className="rounded-lg border border-line-border bg-surface p-5">
             <TransactionList rows={recent} />
           </div>
