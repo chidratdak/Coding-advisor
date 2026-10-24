@@ -1,10 +1,10 @@
 # Money Tracker
 
-A simple web app to record your daily income, expenses, and savings goals, and see a dashboard of where your money stands — in USD, THB, CNY, and LAK. Anyone you share it with creates their own account and only ever sees their own data.
+A simple web app to record your daily income, expenses, and savings goals, and see a dashboard of where your money stands — in USD, THB, CNY, and LAK. Single-user: no login, just open it and use it.
 
 ## Put it online (recommended — works anywhere, no WiFi restriction)
 
-This makes the app live at its own web address, so you and your friends can each log in from anywhere — no need for your computer to be on or everyone on the same WiFi.
+This makes the app live at its own web address, so you can open it from anywhere — no need for your computer to be on or your phone to share WiFi with it.
 
 **1. Create a free database (2 minutes)**
 - Go to [neon.tech](https://neon.tech) and sign up (free).
@@ -16,18 +16,17 @@ This makes the app live at its own web address, so you and your friends can each
 - Click **Add New → Project**, and pick this repository (`Coding-advisor`).
 - When it asks which branch, choose `claude/finance-dashboard-webapp-jltl70` (or whichever branch has the latest version).
 
-**3. Add two settings before deploying**
+**3. Add one setting before deploying**
 Still on Vercel, find **Environment Variables** and add:
 | Name | Value |
 |---|---|
 | `DATABASE_URL` | the connection string you copied from Neon in step 1 |
-| `SESSION_SECRET` | any long random string — mash your keyboard for 40+ characters |
 
 **4. Click Deploy**
 Vercel builds the app and sets up the database tables automatically. After a minute or two, it gives you a real web address like `https://your-app-name.vercel.app`.
 
-**5. Share that address**
-Open it, create your own username + 4-digit PIN, and send the same link to your friends — each of them creates their own separate account (nobody sees anyone else's numbers).
+**5. Open it**
+That's it — no account to create, no login screen. It opens straight to your dashboard.
 
 **6. Add it to your phone's home screen**
 Open the address on your phone, then:
@@ -72,11 +71,6 @@ This only works while your computer is on and both devices share the same WiFi �
 
 ## What it does
 
-- **Login** — each person creates their own username + 4-digit PIN. This is a convenience lock, not bank-grade security — see the note on the sign-up screen.
-- **Dashboard** — shows your remaining balance, total income, total expenses, and total saved, broken out separately for each currency you use (amounts in different currencies are never mixed together), plus a chart of what categories your spending goes to.
-- **Add Transaction** — log money in (income), money out (expenses), or a contribution toward a savings goal. Expense categories: Food, Drinks, Beauty & Self-Care, Groceries, Personal Items, Education, Utilities, Transport, Family, Others.
+- **Dashboard** — shows your remaining balance, total income, total expenses, today's spending, and total saved, broken out separately for each currency you use (amounts in different currencies are never mixed together), plus a chart of what categories your spending goes to.
+- **Add Transaction** — log money in (income), money out (expenses), or a contribution toward a savings goal (pick "Savings" as the category, then which goal). Expense categories: Food, Drinks, Beauty & Self-Care, Groceries, Personal Items, Education, Utilities, Transport, Family, Others, Savings.
 - **Savings Goals** — create a goal (e.g. "Emergency Fund — $1,000") with a category (Stocks, Gold, Emergency Fund) and track progress as you contribute to it.
-
-## If you ever forget your PIN
-
-There's no automatic password reset yet. Ask whoever manages the database (Neon) to delete your row from the `User` table, then sign up again — this loses that account's transaction history.

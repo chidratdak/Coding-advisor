@@ -1,15 +1,11 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
-import { requireAuth } from "@/lib/auth";
 import { TransactionList } from "@/components/TransactionList";
 
 export const dynamic = "force-dynamic";
 
 export default async function AllTransactionsPage() {
-  const userId = await requireAuth();
-
   const transactions = await prisma.transaction.findMany({
-    where: { userId },
     orderBy: { date: "desc" },
   });
 

@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
-import { requireAuth } from "@/lib/auth";
 import { StatTile } from "@/components/StatTile";
 import { CategoryPieChart } from "@/components/CategoryPieChart";
 import { SavingsGoalCard } from "@/components/SavingsGoalCard";
@@ -9,12 +8,9 @@ import { TransactionList } from "@/components/TransactionList";
 export const dynamic = "force-dynamic";
 
 export default async function DashboardPage() {
-  const userId = await requireAuth();
-
   const [transactions, goals] = await Promise.all([
-    prisma.transaction.findMany({ where: { userId }, orderBy: { date: "desc" } }),
+    prisma.transaction.findMany({ orderBy: { date: "desc" } }),
     prisma.savingsGoal.findMany({
-      where: { userId },
       include: { transactions: { where: { type: "SAVINGS" } } },
       orderBy: { createdAt: "asc" },
     }),
@@ -23,6 +19,10 @@ export default async function DashboardPage() {
   const currencies = Array.from(new Set(transactions.map((t) => t.currency))).sort();
 
   const recent = transactions.slice(0, 10);
+
+  const now = new Date();
+  const todayStart = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
+  const todayEnd = new Date(todayStart.getTime() + 24 * 60 * 60 * 1000);
 
   return (
     <div className="space-y-10">
@@ -58,6 +58,9 @@ export default async function DashboardPage() {
           .filter((t) => t.type === "SAVINGS")
           .reduce((sum, t) => sum + t.amount, 0);
         const remaining = totalIncome - totalExpense - totalSaved;
+        const spentToday = rows
+          .filter((t) => t.type === "EXPENSE" && t.date >= todayStart && t.date < todayEnd)
+          .reduce((sum, t) => sum + t.amount, 0);
 
         // Savings contributions count as "where the money goes" too, each
         // shown under its goal's name - but stay out of the Expenses stat
@@ -77,7 +80,7 @@ export default async function DashboardPage() {
             <h2 className="text-sm font-semibold uppercase tracking-wide text-ink-muted">
               {currency}
             </h2>
-            <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+            <div className="grid grid-cols-2 gap-4 sm:grid-cols-5">
               <StatTile
                 label="Remaining"
                 amount={remaining}
@@ -87,6 +90,7 @@ export default async function DashboardPage() {
               <StatTile label="Income" amount={totalIncome} currency={currency} />
               <StatTile label="Expenses" amount={totalExpense} currency={currency} />
               <StatTile label="Saved" amount={totalSaved} currency={currency} />
+              <StatTile label="Spent Today" amount={spentToday} currency={currency} />
             </div>
 
             <div className="rounded-lg border border-line-border bg-surface p-5">
