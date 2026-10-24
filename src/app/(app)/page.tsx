@@ -4,29 +4,53 @@ import { StatTile } from "@/components/StatTile";
 import { CategoryPieChart } from "@/components/CategoryPieChart";
 import { SavingsGoalCard } from "@/components/SavingsGoalCard";
 import { TransactionList } from "@/components/TransactionList";
+import { MonthYearPicker } from "@/components/MonthYearPicker";
 
 export const dynamic = "force-dynamic";
 
-export default async function DashboardPage() {
-  const [transactions, goals] = await Promise.all([
-    prisma.transaction.findMany({ orderBy: { date: "desc" } }),
+export default async function DashboardPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ month?: string; year?: string }>;
+}) {
+  const [allTransactions, goals] = await Promise.all([
+    prisma.transaction.findMany({ orderBy: [{ date: "desc" }, { createdAt: "desc" }] }),
     prisma.savingsGoal.findMany({
       include: { transactions: { where: { type: "SAVINGS" } } },
       orderBy: { createdAt: "asc" },
     }),
   ]);
 
+  const now = new Date();
+  const params = await searchParams;
+  const parsedMonth = Number(params.month);
+  const parsedYear = Number(params.year);
+  const month =
+    Number.isInteger(parsedMonth) && parsedMonth >= 1 && parsedMonth <= 12
+      ? parsedMonth
+      : now.getUTCMonth() + 1;
+  const year = Number.isInteger(parsedYear) && parsedYear >= 2000 && parsedYear <= 2100 ? parsedYear : now.getUTCFullYear();
+
+  const isCurrentMonth = month === now.getUTCMonth() + 1 && year === now.getUTCFullYear();
+
+  const monthStart = new Date(Date.UTC(year, month - 1, 1));
+  const monthEnd = new Date(Date.UTC(year, month, 1));
+  const transactions = allTransactions.filter((t) => t.date >= monthStart && t.date < monthEnd);
+
+  const years = Array.from(
+    new Set([...allTransactions.map((t) => t.date.getUTCFullYear()), now.getUTCFullYear()])
+  ).sort((a, b) => b - a);
+
   const currencies = Array.from(new Set(transactions.map((t) => t.currency))).sort();
 
   const recent = transactions.slice(0, 10);
 
-  const now = new Date();
   const todayStart = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
   const todayEnd = new Date(todayStart.getTime() + 24 * 60 * 60 * 1000);
 
   return (
     <div className="space-y-10">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-center justify-between gap-3">
         <h1 className="text-xl font-semibold text-ink-primary">Dashboard</h1>
         <Link
           href="/add"
@@ -36,13 +60,21 @@ export default async function DashboardPage() {
         </Link>
       </div>
 
-      {currencies.length === 0 && (
+      <MonthYearPicker month={month} year={year} years={years} />
+
+      {allTransactions.length === 0 && (
         <div className="rounded-lg border border-line-border bg-surface p-6 text-center text-sm text-ink-secondary">
           No transactions yet.{" "}
           <Link href="/add" className="font-medium text-ink-primary underline underline-offset-2">
             Add your first one
           </Link>
           .
+        </div>
+      )}
+
+      {allTransactions.length > 0 && currencies.length === 0 && (
+        <div className="rounded-lg border border-line-border bg-surface p-6 text-center text-sm text-ink-secondary">
+          No transactions for this month.
         </div>
       )}
 
@@ -58,8 +90,14 @@ export default async function DashboardPage() {
           .filter((t) => t.type === "SAVINGS")
           .reduce((sum, t) => sum + t.amount, 0);
         const remaining = totalIncome - totalExpense - totalSaved;
-        const spentToday = rows
-          .filter((t) => t.type === "EXPENSE" && t.date >= todayStart && t.date < todayEnd)
+        const spentToday = allTransactions
+          .filter(
+            (t) =>
+              t.currency === currency &&
+              t.type === "EXPENSE" &&
+              t.date >= todayStart &&
+              t.date < todayEnd
+          )
           .reduce((sum, t) => sum + t.amount, 0);
 
         // Savings contributions count as "where the money goes" too, each
@@ -80,17 +118,19 @@ export default async function DashboardPage() {
             <h2 className="text-sm font-semibold uppercase tracking-wide text-ink-muted">
               {currency}
             </h2>
-            <div className="grid grid-cols-2 gap-4 sm:grid-cols-5">
+            <div className={`grid grid-cols-2 gap-4 ${isCurrentMonth ? "sm:grid-cols-5" : "sm:grid-cols-4"}`}>
               <StatTile
                 label="Remaining"
                 amount={remaining}
                 currency={currency}
                 tone={remaining < 0 ? "critical" : "good"}
               />
+              {isCurrentMonth && (
+                <StatTile label="Spent Today" amount={spentToday} currency={currency} tone="critical" />
+              )}
               <StatTile label="Income" amount={totalIncome} currency={currency} />
               <StatTile label="Expenses" amount={totalExpense} currency={currency} />
               <StatTile label="Saved" amount={totalSaved} currency={currency} />
-              <StatTile label="Spent Today" amount={spentToday} currency={currency} />
             </div>
 
             <div className="rounded-lg border border-line-border bg-surface p-5">
@@ -134,14 +174,12 @@ export default async function DashboardPage() {
             <h2 className="text-sm font-semibold uppercase tracking-wide text-ink-muted">
               Recent transactions
             </h2>
-            {transactions.length > recent.length && (
-              <Link
-                href="/transactions"
-                className="text-sm font-medium text-ink-primary underline underline-offset-2"
-              >
-                View all ({transactions.length})
-              </Link>
-            )}
+            <Link
+              href="/transactions"
+              className="text-sm font-medium text-ink-primary underline underline-offset-2"
+            >
+              View all ({allTransactions.length})
+            </Link>
           </div>
           <div className="rounded-lg border border-line-border bg-surface p-5">
             <TransactionList rows={recent} />

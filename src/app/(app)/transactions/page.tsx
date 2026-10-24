@@ -6,7 +6,7 @@ export const dynamic = "force-dynamic";
 
 export default async function AllTransactionsPage() {
   const transactions = await prisma.transaction.findMany({
-    orderBy: { date: "desc" },
+    orderBy: [{ date: "desc" }, { createdAt: "desc" }],
   });
 
   return (

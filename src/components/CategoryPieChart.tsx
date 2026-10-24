@@ -39,12 +39,15 @@ export function CategoryPieChart({
     const renderLength = Math.max(rawLength - gap, 0);
     const offset = -cumulative;
     cumulative += rawLength;
+    const pct = fraction * 100 < 1 && fraction > 0 ? "<1" : (fraction * 100).toFixed(0);
     return {
       ...d,
       fraction,
       renderLength,
       offset,
       slot: seriesSlotFor(d.category),
+      pct,
+      title: `${d.category}: ${formatCurrency(d.amount, currency)} (${pct}%)`,
     };
   });
 
@@ -66,9 +69,7 @@ export function CategoryPieChart({
                 strokeDasharray={`${s.renderLength} ${CIRCUMFERENCE - s.renderLength}`}
                 strokeDashoffset={s.offset}
               >
-                <title>
-                  {s.category}: {formatCurrency(s.amount, currency)} ({s.fraction * 100 < 1 && s.fraction > 0 ? "<1" : (s.fraction * 100).toFixed(0)}%)
-                </title>
+                <title>{s.title}</title>
               </circle>
             ))}
           </g>
@@ -93,9 +94,7 @@ export function CategoryPieChart({
                 aria-hidden
               />
               <span className="min-w-0 flex-1 truncate text-ink-secondary">{s.category}</span>
-              <span className="shrink-0 tabular-nums text-ink-muted">
-                {s.fraction * 100 < 1 && s.fraction > 0 ? "<1" : (s.fraction * 100).toFixed(0)}%
-              </span>
+              <span className="shrink-0 tabular-nums text-ink-muted">{s.pct}%</span>
               <span className="w-24 shrink-0 text-right tabular-nums text-ink-primary">
                 {formatCurrency(s.amount, currency)}
               </span>
